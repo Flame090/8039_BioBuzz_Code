@@ -73,8 +73,10 @@ public class RobitsStarterBotAuto extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive;
-    private DcMotor rightDrive;
+    private DcMotor backLDrive;
+    private DcMotor backRDrive;
+    private DcMotor frontLDrive;
+    private DcMotor frontRDrive;
     private DcMotor motorCatapult;
 
     private CRServo rollerI;
@@ -109,8 +111,11 @@ public class RobitsStarterBotAuto extends LinearOpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-        leftDrive = hardwareMap.dcMotor.get("left_drive");
-        rightDrive = hardwareMap.dcMotor.get("right_drive");
+        backLDrive = hardwareMap.dcMotor.get("Back Left");
+        frontLDrive = hardwareMap.dcMotor.get("Front Left");
+        backRDrive = hardwareMap.dcMotor.get("Back Right");
+        frontRDrive = hardwareMap.dcMotor.get("Front Right");
+
         motorCatapult = hardwareMap.dcMotor.get("catapult");
         rollerI = hardwareMap.crservo.get("rollerI");
         rollerF = hardwareMap.crservo.get("rollerF");
@@ -120,17 +125,23 @@ public class RobitsStarterBotAuto extends LinearOpMode {
          * If the robot is driving opposite directions than expected change
          * "REVERSE" to "FORWARD" or vice-versa. This also applies to the catapult.
          */
-        leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         motorCatapult.setDirection(DcMotorSimple.Direction.REVERSE);
         rollerI.setDirection(DcMotorSimple.Direction.REVERSE);
         rollerF.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         /*
          * The code below creates a delay for the start of Auto. This can be useful
@@ -169,8 +180,12 @@ public class RobitsStarterBotAuto extends LinearOpMode {
 
             // Show the elapsed game time and wheel information
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Left Encoder", leftDrive.getCurrentPosition());
-            telemetry.addData("Right Encoder", rightDrive.getCurrentPosition());
+            telemetry.addData("Back Left Encoder", backLDrive.getCurrentPosition());
+            telemetry.addData("Back Right Encoder", backRDrive.getCurrentPosition());
+            telemetry.addData("Front Right Encoder", frontRDrive.getCurrentPosition());
+            telemetry.addData("Front Left Encoder", frontLDrive.getCurrentPosition());
+
+
             telemetry.update();
             break;
         }
@@ -178,37 +193,51 @@ public class RobitsStarterBotAuto extends LinearOpMode {
 
     // Method to perform a relative move, based on encoder counts.
     public void encoderDrive(double speed, double leftInches, double rightInches, double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
+        int newFrontLeftTarget;
+        int newFrontRightTarget;
 
         if (opModeIsActive()) {
-            newLeftTarget = leftDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = rightDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            leftDrive.setTargetPosition(newLeftTarget);
-            rightDrive.setTargetPosition(newRightTarget);
+            newBackLeftTarget = backLDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newBackRightTarget = backRDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newFrontRightTarget = frontRDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newFrontLeftTarget = frontLDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            frontLDrive.setTargetPosition(newFrontLeftTarget);
+            frontRDrive.setTargetPosition(newFrontRightTarget);
+            backRDrive.setTargetPosition(newBackRightTarget);
+            backLDrive.setTargetPosition(newBackLeftTarget);
 
-            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             runtime.reset();
-            leftDrive.setPower(Math.abs(speed));
-            rightDrive.setPower(Math.abs(speed));
+            frontLDrive.setPower(Math.abs(speed));
+            frontRDrive.setPower(Math.abs(speed));
+            backLDrive.setPower(Math.abs(speed));
+            backRDrive.setPower(Math.abs(speed));
 
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (leftDrive.isBusy() && rightDrive.isBusy())) {
+                    (backRDrive.isBusy() && frontRDrive.isBusy() && backLDrive.isBusy() && frontLDrive.isBusy())) {
 
-                telemetry.addData("Running to", " %7d :%7d", newLeftTarget, newRightTarget);
+                telemetry.addData("Running to", " %7d :%7d", newBackLeftTarget, newBackRightTarget, newFrontLeftTarget, newFrontRightTarget);
                 telemetry.addData("Currently at", " at %7d :%7d",
-                        leftDrive.getCurrentPosition(), rightDrive.getCurrentPosition());
+                        backRDrive.getCurrentPosition(), backLDrive.getCurrentPosition(), frontRDrive.getCurrentPosition(), frontLDrive.getCurrentPosition());
                 telemetry.update();
             }
 
-            leftDrive.setPower(0);
-            rightDrive.setPower(0);
+            backLDrive.setPower(0);
+            backRDrive.setPower(0);
+            frontLDrive.setPower(0);
+            frontRDrive.setPower(0);
 
-            leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(250); // Pause after each move
         }
