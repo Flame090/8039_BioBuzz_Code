@@ -125,10 +125,10 @@ public class RobitsStarterBotAuto extends LinearOpMode {
          * If the robot is driving opposite directions than expected change
          * "REVERSE" to "FORWARD" or vice-versa. This also applies to the catapult.
          */
-        backLDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         motorCatapult.setDirection(DcMotorSimple.Direction.REVERSE);
         rollerI.setDirection(DcMotorSimple.Direction.REVERSE);
         rollerF.setDirection(DcMotorSimple.Direction.FORWARD);
