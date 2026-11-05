@@ -87,6 +87,8 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
        private ElapsedTime runtime = new ElapsedTime();
        private DcMotor leftDrive;
        private DcMotor rightDrive;
+       private DcMotor rightBackDrive;
+       private DcMotor leftBackDrive;
        private DcMotor motorCatapult;
        
        private CRServo rollerI;
@@ -136,8 +138,10 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
         * to 'get' must correspond to the names assigned during the robot configuration
         * step (using the FTC Robot Controller app).
         */
-        leftDrive = hardwareMap.dcMotor.get("left_drive");
-        rightDrive = hardwareMap.dcMotor.get("right_drive");
+        leftDrive = hardwareMap.dcMotor.get("Front Left");
+        rightDrive = hardwareMap.dcMotor.get("Front Right");
+        leftBackDrive = hardwareMap.dcMotor.get("Back Left");
+        rightBackDrive = hardwareMap.dcMotor.get("Back Right");
         motorCatapult = hardwareMap.dcMotor.get("catapult");
         rollerI = hardwareMap.crservo.get("rollerI");
         rollerF = hardwareMap.crservo.get("rollerF");
@@ -148,7 +152,9 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
         * "REVERSE" to "FORWARD" or vice-versa. This also applies to the catapult and rollers.
         */ 
         leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         motorCatapult.setDirection(DcMotorSimple.Direction.REVERSE);  
         rollerI.setDirection(DcMotorSimple.Direction.REVERSE);  
         rollerF.setDirection(DcMotorSimple.Direction.FORWARD);  
@@ -188,6 +194,8 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
             // Send calculated power to wheels
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
+            rightBackDrive.setPower(rightPower);
+            leftBackDrive.setPower(leftPower);
             
             // Flower Stick control
             if (gamepad1.a) {
