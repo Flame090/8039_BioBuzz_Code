@@ -90,6 +90,7 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
        private DcMotor rightBackDrive;
        private DcMotor leftBackDrive;
        private DcMotor motorCatapult;
+
        
        private CRServo rollerI;
        private CRServo rollerF;
@@ -143,9 +144,8 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
         leftBackDrive = hardwareMap.dcMotor.get("Back Left");
         rightBackDrive = hardwareMap.dcMotor.get("Back Right");
         motorCatapult = hardwareMap.dcMotor.get("catapult");
-        rollerI = hardwareMap.crservo.get("rollerI");
-        rollerF = hardwareMap.crservo.get("rollerF");
-        stick = hardwareMap.servo.get("stick");
+        rollerI = hardwareMap.crservo.get("roller");
+
 
         /* Most robots need the motor on one side to be reversed to drive forward
         * If the robot is driving opposite directions than expected change
@@ -155,12 +155,11 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
         rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorCatapult.setDirection(DcMotorSimple.Direction.REVERSE);  
-        rollerI.setDirection(DcMotorSimple.Direction.REVERSE);  
-        rollerF.setDirection(DcMotorSimple.Direction.FORWARD);  
-        
-        stick.setPosition(STICKIN); // Defaults the stick flower mechanism to in. 
-        
+        motorCatapult.setDirection(DcMotorSimple.Direction.REVERSE);
+        rollerI.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -190,38 +189,34 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
                 leftPower = gamepad1.left_stick_y;
                 rightPower = gamepad1.right_stick_y;
             }
-            
+
+            if (gamepad2.a) {
+                rollerI.setPower(in);
+            }else if (gamepad2.b) {
+                rollerI.setPower(out);
+            } else {
+                rollerI.setPower(0);
+            }
             // Send calculated power to wheels
             leftDrive.setPower(leftPower);
             rightDrive.setPower(rightPower);
             rightBackDrive.setPower(rightPower);
             leftBackDrive.setPower(leftPower);
             
-            // Flower Stick control
-            if (gamepad1.a) {
-                stick.setPosition(STICKIN);
-            } else if (gamepad1.x) {
-                stick.setPosition(STICKOUT);
-            }
-            
+
             //Intake control
-            if (gamepad1.left_bumper) {
-                rollerI.setPower(in);
-                rollerF.setPower(in);
-            }else if (gamepad1.right_bumper) {
-                rollerI.setPower(out);
-                rollerF.setPower(out);
-            } else {
-                rollerI.setPower(0);
-                rollerF.setPower(0);
-            }
-            
+
+
             //Launch control
-            if (gamepad1.right_trigger > 0) {
+            if (gamepad2.right_trigger > 0) {
                 motorCatapult.setPower(WIND);
-            } else {
-                motorCatapult.setPower(0); // This turns the catapult motor off when not in use
-            }            
+            }
+            else if (gamepad2.left_trigger > 0) {
+                motorCatapult.setPower(-1); // This turns the catapult motor off when not in use
+            }
+            else {
+                motorCatapult.setPower(0);
+            }
 
             // Show the elapsed game time.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -241,8 +236,7 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
             } else {
                 telemetry.addData("Catapult Status","Off");
             }
-            
-            telemetry.addData("Stick Position", stick.getPosition());
+
             telemetry.update();
         }
     }
