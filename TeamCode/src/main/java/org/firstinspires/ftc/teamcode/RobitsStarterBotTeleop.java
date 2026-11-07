@@ -115,7 +115,7 @@ public class RobitsStarterBotTeleop extends LinearOpMode {
            ARCADE,
            TANK
        }
-       private DriveStyle drive = DriveStyle.SPLIT_ARCADE;//Select drive mode
+       private DriveStyle drive = DriveStyle.TANK;//Select drive mode
 
        /*
        * These constants control the catapult's fire speed.

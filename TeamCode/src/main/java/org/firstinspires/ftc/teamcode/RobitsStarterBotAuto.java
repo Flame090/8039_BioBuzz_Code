@@ -111,27 +111,24 @@ public class RobitsStarterBotAuto extends LinearOpMode {
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-        backLDrive = hardwareMap.dcMotor.get("Back Left");
         frontLDrive = hardwareMap.dcMotor.get("Front Left");
-        backRDrive = hardwareMap.dcMotor.get("Back Right");
         frontRDrive = hardwareMap.dcMotor.get("Front Right");
-
+        backLDrive = hardwareMap.dcMotor.get("Back Left");
+        backRDrive = hardwareMap.dcMotor.get("Back Right");
         motorCatapult = hardwareMap.dcMotor.get("catapult");
-        rollerI = hardwareMap.crservo.get("rollerI");
-        rollerF = hardwareMap.crservo.get("rollerF");
-        stick = hardwareMap.servo.get("stick");
+        rollerI = hardwareMap.crservo.get("roller");
+
 
         /* Most robots need the motor on one side to be reversed to drive forward
          * If the robot is driving opposite directions than expected change
          * "REVERSE" to "FORWARD" or vice-versa. This also applies to the catapult.
          */
-        backLDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRDrive.setDirection(DcMotorSimple.Direction.FORWARD);
         backRDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLDrive.setDirection(DcMotorSimple.Direction.REVERSE);
         motorCatapult.setDirection(DcMotorSimple.Direction.REVERSE);
         rollerI.setDirection(DcMotorSimple.Direction.REVERSE);
-        rollerF.setDirection(DcMotorSimple.Direction.FORWARD);
 
         backLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
